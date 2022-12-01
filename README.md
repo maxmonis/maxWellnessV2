@@ -64,7 +64,7 @@ nvm use
 Start the app in development mode:
 
 ```
-yarn start
+yarn dev
 ```
 
 ---
