@@ -1,9 +1,9 @@
+import CssBaseline from "@mui/material/CssBaseline"
 import {
   createTheme,
   responsiveFontSizes,
   ThemeProvider,
 } from "@mui/material/styles"
-import CssBaseline from "@mui/material/CssBaseline"
 import Typography from "@mui/material/Typography"
 import useMediaQuery from "@mui/material/useMediaQuery"
 
