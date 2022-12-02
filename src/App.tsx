@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import CssBaseline from "@mui/material/CssBaseline"
+import {
+  createTheme,
+  responsiveFontSizes,
+  ThemeProvider,
+} from "@mui/material/styles"
+import Typography from "@mui/material/Typography"
+import useMediaQuery from "@mui/material/useMediaQuery"
 
-function App() {
+export default function App() {
+  const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
+
+  const theme = responsiveFontSizes(
+    createTheme({
+      palette: {
+        mode: prefersDark ? "dark" : "light",
+      },
+      spacing: (factor = 1) => `${0.25 * factor}rem`,
+    }),
+  )
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <ThemeProvider theme={theme}>
+      <CssBaseline enableColorScheme />
+      <Typography variant="h1">maxWellness</Typography>
+    </ThemeProvider>
+  )
 }
-
-export default App;

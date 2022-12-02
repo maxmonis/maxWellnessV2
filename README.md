@@ -1,46 +1,88 @@
-# Getting Started with Create React App
+# maxWellness
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Allows personal trainers to track their workouts and those of their clients.
 
-## Available Scripts
+This is v2 of the app, the original can be found at
+[github.com/maxmonis/maxWellness](https://github.com/maxmonis/maxWellness).
 
-In the project directory, you can run:
+---
 
-### `yarn start`
+## Requirements
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+You'll need `Node.js`, `Yarn`, and `NVM (Node Version Manager)` installed on
+your machine to run this app locally.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Node can be installed by following the instructions at
+[nodejs.org](https://nodejs.org/).
 
-### `yarn test`
+Yarn can then be added:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+npm install --global yarn
+```
 
-### `yarn build`
+You can add NVM by following the instructions at
+[@nvm-sh/nvm](https://github.com/nvm-sh/nvm).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Clone the repo onto your machine and cd into it:
 
-### `yarn eject`
+```
+git clone https://github.com/maxmonis/max-wellness.com.git
+cd max-wellness.com
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Get the latest recommended version of Node.js (stored in `.nvmrc`):
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+nvm use
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Download all dependencies:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
+yarn install
+```
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Configuration
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Ensure you're using the correct Node version:
+
+```
+nvm use
+```
+
+---
+
+## Development
+
+Start the app in development mode:
+
+```
+yarn dev
+```
+
+---
+
+## Production
+
+Create a production build of the app:
+
+```
+yarn build
+```
+
+---
+
+## Testing
+
+Launch the test runner in the interactive watch mode:
+
+```
+yarn test
+```
