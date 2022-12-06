@@ -1,5 +1,6 @@
 import { BrowserRouter } from "react-router-dom"
 
+import { faker } from "@faker-js/faker"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
@@ -7,9 +8,9 @@ import ResetPassword from "../ResetPassword"
 
 const firebaseAuth = require("firebase/auth")
 
-const email = "john@example.com"
-const invalidEmail = "notAnEmail"
-const errorMessage = "Mock error message"
+const email = faker.internet.email()
+const invalidEmail = faker.lorem.word(5)
+const errorMessage = faker.lorem.sentence(5)
 
 const mockSendPasswordResetEmail = jest.fn()
 

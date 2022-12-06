@@ -34,6 +34,7 @@
     "web-vitals": "^2.1.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^7.6.0",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "msw": "^0.49.1"
   },
