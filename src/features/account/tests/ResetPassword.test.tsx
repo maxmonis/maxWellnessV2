@@ -36,19 +36,22 @@ jest.mock("firebase/firestore", () => {
   }
 })
 
+const component = (
+  <BrowserRouter>
+    <ResetPassword />
+  </BrowserRouter>
+)
+
 describe("ResetPassword", () => {
   test("prevents submission and shows error if email is invalid", () => {
-    render(
-      <BrowserRouter>
-        <ResetPassword />
-      </BrowserRouter>,
-    )
+    render(component)
     const emailInput = screen.getByLabelText(/email/i)
+    expect(emailInput).toHaveFocus()
     expect(emailInput).toHaveDisplayValue("")
     expect(emailInput).toBeValid()
 
     // required email error displayed when user submits
-    userEvent.type(emailInput, "{enter}")
+    userEvent.keyboard("{enter}")
     expect(emailInput).toBeInvalid()
     screen.getByText(/email is required/i)
 
@@ -60,7 +63,7 @@ describe("ResetPassword", () => {
     expect(screen.queryByText(/email is required/i)).toBeNull()
 
     // invalid email error displayed when user submits
-    userEvent.type(emailInput, "{enter}")
+    userEvent.keyboard("{enter}")
     expect(emailInput).toBeInvalid()
     screen.getByText(/invalid email/i)
 
@@ -69,22 +72,17 @@ describe("ResetPassword", () => {
   })
 
   test("sends password reset email and shows confirmation if email is valid", async () => {
-    render(
-      <BrowserRouter>
-        <ResetPassword />
-      </BrowserRouter>,
-    )
+    render(component)
     const submitButton = screen.getByRole("button", {
       name: /reset password/i,
     })
-    const emailInput = screen.getByLabelText(/email/i)
-    userEvent.type(emailInput, email)
+    userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.click(submitButton)
 
     // button disabled while submitting
     expect(submitButton).toBeDisabled()
-    // hit enter to ensure only one submit happens
-    userEvent.type(emailInput, "{enter}")
+    // hit enter to ensure no extra request is fired
+    userEvent.keyboard("{enter}")
 
     // confirmation message displayed instead of form
     await screen.findByRole("heading", { name: /email sent/i })
@@ -103,11 +101,7 @@ describe("ResetPassword", () => {
         throw Error(errorMessage)
       })
 
-    render(
-      <BrowserRouter>
-        <ResetPassword />
-      </BrowserRouter>,
-    )
+    render(component)
     userEvent.type(screen.getByLabelText(/email/i), `${email}{enter}`)
 
     // error message displayed in alert
