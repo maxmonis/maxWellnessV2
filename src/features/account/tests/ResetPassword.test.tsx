@@ -1,50 +1,29 @@
 import { BrowserRouter } from "react-router-dom"
 
-import { faker } from "@faker-js/faker"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import ResetPassword from "../ResetPassword"
 
-const firebaseAuth = require("firebase/auth")
+import { email, errorMessage, invalidEmail } from "./utils"
 
-const email = faker.internet.email()
-const invalidEmail = faker.lorem.word(5)
-const errorMessage = faker.lorem.sentence(5)
+const firebaseAuth = require("firebase/auth")
 
 const mockSendPasswordResetEmail = jest.fn()
 
-jest.mock("firebase/app", () => {
-  return {
-    initializeApp: jest.fn(),
-  }
-})
-
 jest.mock("firebase/auth", () => {
+  const actualFirebaseAuth = jest.requireActual("firebase/auth")
   return {
-    getAuth: jest.fn(),
-    GoogleAuthProvider: jest.fn(),
+    ...actualFirebaseAuth,
     sendPasswordResetEmail: (...args: unknown[]) => {
       mockSendPasswordResetEmail(...args)
     },
   }
 })
 
-jest.mock("firebase/firestore", () => {
-  return {
-    getFirestore: jest.fn(),
-  }
-})
-
-const component = (
-  <BrowserRouter>
-    <ResetPassword />
-  </BrowserRouter>
-)
-
 describe("ResetPassword", () => {
   test("prevents submission and shows error if email is invalid", () => {
-    render(component)
+    render(<ResetPassword />, { wrapper: BrowserRouter })
     const emailInput = screen.getByLabelText(/email/i)
     expect(emailInput).toHaveFocus()
     expect(emailInput).toHaveDisplayValue("")
@@ -72,12 +51,15 @@ describe("ResetPassword", () => {
   })
 
   test("sends password reset email and shows confirmation if email is valid", async () => {
-    render(component)
+    render(<ResetPassword />, { wrapper: BrowserRouter })
     const submitButton = screen.getByRole("button", {
       name: /reset password/i,
     })
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.click(submitButton)
+
+    // link disabled while submitting
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/")
 
     // button disabled while submitting
     expect(submitButton).toBeDisabled()
@@ -91,7 +73,10 @@ describe("ResetPassword", () => {
     // no duplicate call happened
     expect(mockSendPasswordResetEmail).toHaveBeenCalledTimes(1)
     // email sent to correct address
-    expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(undefined, email)
+    expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(
+      expect.objectContaining({}), // auth
+      email,
+    )
   })
 
   test("shows error if one occurs", async () => {
@@ -101,7 +86,7 @@ describe("ResetPassword", () => {
         throw Error(errorMessage)
       })
 
-    render(component)
+    render(<ResetPassword />, { wrapper: BrowserRouter })
     userEvent.type(screen.getByLabelText(/email/i), `${email}{enter}`)
 
     // error message displayed in alert

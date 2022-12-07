@@ -1,34 +1,29 @@
 import { BrowserRouter } from "react-router-dom"
 
-import { faker } from "@faker-js/faker"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import Register from "../Register"
 
-const firebaseAuth = require("firebase/auth")
+import {
+  email,
+  errorMessage,
+  errorMessage2,
+  invalidEmail,
+  invalidPassword,
+  password,
+  username,
+} from "./utils"
 
-const username = faker.internet.userName()
-const email = faker.internet.email()
-const invalidEmail = faker.lorem.word(5)
-const password = faker.lorem.word(6)
-const invalidPassword = faker.lorem.word(5)
-const errorMessage = faker.lorem.sentence(5)
-const errorMessage2 = faker.lorem.sentence(4)
+const firebaseAuth = require("firebase/auth")
 
 const mockCreateUserWithEmailAndPassword = jest.fn()
 const mockSignInWithPopup = jest.fn()
 
-jest.mock("firebase/app", () => {
-  return {
-    initializeApp: jest.fn(),
-  }
-})
-
 jest.mock("firebase/auth", () => {
+  const actualFirebaseAuth = jest.requireActual("firebase/auth")
   return {
-    getAuth: jest.fn(),
-    GoogleAuthProvider: jest.fn(),
+    ...actualFirebaseAuth,
     createUserWithEmailAndPassword: (...args: unknown[]) => {
       mockCreateUserWithEmailAndPassword(...args)
     },
@@ -38,21 +33,9 @@ jest.mock("firebase/auth", () => {
   }
 })
 
-jest.mock("firebase/firestore", () => {
-  return {
-    getFirestore: jest.fn(),
-  }
-})
-
-const component = (
-  <BrowserRouter>
-    <Register />
-  </BrowserRouter>
-)
-
 describe("Register", () => {
   test("prevents submission and shows error if credentials are invalid", () => {
-    render(component)
+    render(<Register />, { wrapper: BrowserRouter })
     const usernameInput = screen.getByLabelText(/username/i)
     expect(usernameInput).toHaveFocus()
     expect(usernameInput).toHaveDisplayValue("")
@@ -100,7 +83,7 @@ describe("Register", () => {
   })
 
   test("logs user in if credentials are valid", async () => {
-    render(component)
+    render(<Register />, { wrapper: BrowserRouter })
     const submitButton = screen.getByRole("button", {
       name: "Register",
     })
@@ -108,6 +91,9 @@ describe("Register", () => {
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.type(screen.getByLabelText("Password"), password)
     userEvent.click(submitButton)
+
+    // link disabled while submitting
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/")
 
     // buttons disabled while submitting
     expect(submitButton).toBeDisabled()
@@ -128,14 +114,14 @@ describe("Register", () => {
     expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledTimes(1)
     // correct credentials passed to method
     expect(mockCreateUserWithEmailAndPassword).toHaveBeenCalledWith(
-      undefined,
+      expect.objectContaining({}), // auth
       email,
       password,
     )
   })
 
   test("opens popup to log user in using google", async () => {
-    render(component)
+    render(<Register />, { wrapper: BrowserRouter })
     const googleButton = screen.getByRole("button", {
       name: /register with google/i,
     })
@@ -172,7 +158,7 @@ describe("Register", () => {
       throw Error(errorMessage2)
     })
 
-    render(component)
+    render(<Register />, { wrapper: BrowserRouter })
     userEvent.type(screen.getByLabelText(/username/i), username)
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.type(screen.getByLabelText("Password"), `${password}{enter}`)

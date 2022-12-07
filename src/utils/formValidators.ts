@@ -2,33 +2,34 @@ import { hasChars, isEmail } from "./validators"
 
 interface InputValues {
   email?: string
-  name?: string
   password?: string
+  username?: string
 }
 interface InputErrors {
   email?: string
-  name?: string
   password?: string
+  username?: string
 }
-export function validateAccountForm({ email, name, password }: InputValues) {
+export function validateAccountForm(inputValues: InputValues) {
+  const { email, password, username } = inputValues
   const inputErrors: InputErrors = {}
-  if (email !== undefined) {
+  if ("email" in inputValues) {
     if (!hasChars(email)) {
       inputErrors.email = "Email is required"
     } else if (!isEmail(email)) {
       inputErrors.email = "Invalid email"
     }
   }
-  if (password !== undefined) {
+  if ("password" in inputValues) {
     if (!hasChars(password)) {
       inputErrors.password = "Password is required"
     } else if (!hasChars(password, 6)) {
       inputErrors.password = "Minimum password length is 6"
     }
   }
-  if (name !== undefined) {
-    if (!hasChars(name)) {
-      inputErrors.name = "Username is required"
+  if ("username" in inputValues) {
+    if (!hasChars(username)) {
+      inputErrors.username = "Username is required"
     }
   }
   return inputErrors

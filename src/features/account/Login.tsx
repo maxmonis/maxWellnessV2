@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -13,8 +13,11 @@ import { validateAccountForm } from "../../utils/formValidators"
 import { extractErrorMessage } from "../../utils/parsers"
 
 export default function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  })
+  const { email, password } = values
   const [inputErrors, setInputErrors] = useState<
     ReturnType<typeof validateAccountForm>
   >({})
@@ -23,7 +26,7 @@ export default function Login() {
 
   useEffect(() => {
     setInputErrors({})
-  }, [email, password])
+  }, [values])
 
   return (
     <Form error={authError} hideError={() => setAuthError("")} onSubmit={login}>
@@ -32,14 +35,16 @@ export default function Login() {
         error={Boolean(inputErrors.email)}
         helperText={inputErrors.email}
         label="Email"
-        onChange={e => setEmail(e.target.value)}
+        name="email"
+        onChange={handleChange}
         value={email}
       />
       <Password
         error={Boolean(inputErrors.password)}
         helperText={inputErrors.password}
         label="Password"
-        onChange={e => setPassword(e.target.value)}
+        name="password"
+        onChange={handleChange}
         value={password}
       />
       <LoadingButton loading={isSubmitting} type="submit" variant="contained">
@@ -52,17 +57,23 @@ export default function Login() {
       >
         Login with Google
       </LoadingButton>
-      <MuiLink component={Link} to="../reset-password">
+      <MuiLink component={Link} to={isSubmitting ? "#" : "../reset-password"}>
         Forgot Password
       </MuiLink>
       <Box mt={-3}>
         Don't have an account?{" "}
-        <MuiLink component={Link} to="../register">
+        <MuiLink component={Link} to={isSubmitting ? "#" : "../register"}>
           Register
         </MuiLink>
       </Box>
     </Form>
   )
+
+  function handleChange({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) {
+    setValues({ ...values, [name]: value })
+  }
 
   async function googleLogin() {
     if (isSubmitting) return
@@ -78,7 +89,7 @@ export default function Login() {
 
   async function login() {
     if (isSubmitting) return
-    const inputErrors = validateAccountForm({ email, password })
+    const inputErrors = validateAccountForm(values)
     setInputErrors(inputErrors)
     if (Object.keys(inputErrors).length > 0) return
     setIsSubmitting(true)
