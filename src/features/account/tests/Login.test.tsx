@@ -1,33 +1,28 @@
 import { BrowserRouter } from "react-router-dom"
 
-import { faker } from "@faker-js/faker"
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 
 import Login from "../Login"
 
-const firebaseAuth = require("firebase/auth")
+import {
+  email,
+  errorMessage,
+  errorMessage2,
+  invalidEmail,
+  invalidPassword,
+  password,
+} from "./utils"
 
-const email = faker.internet.email()
-const invalidEmail = faker.lorem.word(5)
-const password = faker.lorem.word(6)
-const invalidPassword = faker.lorem.word(5)
-const errorMessage = faker.lorem.sentence(5)
-const errorMessage2 = faker.lorem.sentence(4)
+const firebaseAuth = require("firebase/auth")
 
 const mockSignInWithEmailAndPassword = jest.fn()
 const mockSignInWithPopup = jest.fn()
 
-jest.mock("firebase/app", () => {
-  return {
-    initializeApp: jest.fn(),
-  }
-})
-
 jest.mock("firebase/auth", () => {
+  const actualFirebaseAuth = jest.requireActual("firebase/auth")
   return {
-    getAuth: jest.fn(),
-    GoogleAuthProvider: jest.fn(),
+    ...actualFirebaseAuth,
     signInWithEmailAndPassword: (...args: unknown[]) => {
       mockSignInWithEmailAndPassword(...args)
     },
@@ -37,21 +32,9 @@ jest.mock("firebase/auth", () => {
   }
 })
 
-jest.mock("firebase/firestore", () => {
-  return {
-    getFirestore: jest.fn(),
-  }
-})
-
-const component = (
-  <BrowserRouter>
-    <Login />
-  </BrowserRouter>
-)
-
 describe("Login", () => {
   test("prevents submission and shows error if credentials are invalid", () => {
-    render(component)
+    render(<Login />, { wrapper: BrowserRouter })
     const emailInput = screen.getByLabelText(/email/i)
     expect(emailInput).toHaveFocus()
     expect(emailInput).toHaveDisplayValue("")
@@ -92,13 +75,18 @@ describe("Login", () => {
   })
 
   test("logs user in if credentials are valid", async () => {
-    render(component)
+    render(<Login />, { wrapper: BrowserRouter })
     const submitButton = screen.getByRole("button", {
       name: "Login",
     })
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.type(screen.getByLabelText("Password"), password)
     userEvent.click(submitButton)
+
+    // links disabled while submitting
+    for (const link of screen.getAllByRole("link")) {
+      expect(link).toHaveAttribute("href", "/")
+    }
 
     // buttons disabled while submitting
     expect(submitButton).toBeDisabled()
@@ -119,14 +107,14 @@ describe("Login", () => {
     expect(mockSignInWithEmailAndPassword).toHaveBeenCalledTimes(1)
     // correct credentials passed to method
     expect(mockSignInWithEmailAndPassword).toHaveBeenCalledWith(
-      undefined,
+      expect.objectContaining({}), // auth
       email,
       password,
     )
   })
 
   test("opens popup to log user in using google", async () => {
-    render(component)
+    render(<Login />, { wrapper: BrowserRouter })
     const googleButton = screen.getByRole("button", {
       name: /login with google/i,
     })
@@ -162,7 +150,7 @@ describe("Login", () => {
       throw Error(errorMessage2)
     })
 
-    render(component)
+    render(<Login />, { wrapper: BrowserRouter })
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.type(screen.getByLabelText("Password"), `${password}{enter}`)
 

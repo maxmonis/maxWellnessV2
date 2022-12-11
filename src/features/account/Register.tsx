@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -13,9 +13,12 @@ import { validateAccountForm } from "../../utils/formValidators"
 import { extractErrorMessage } from "../../utils/parsers"
 
 export default function Register() {
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+    username: "",
+  })
+  const { email, password, username } = values
   const [inputErrors, setInputErrors] = useState<
     ReturnType<typeof validateAccountForm>
   >({})
@@ -24,7 +27,7 @@ export default function Register() {
 
   useEffect(() => {
     setInputErrors({})
-  }, [email, name, password])
+  }, [values])
 
   return (
     <Form
@@ -34,24 +37,27 @@ export default function Register() {
     >
       <TextField
         autoFocus
-        error={Boolean(inputErrors.name)}
-        helperText={inputErrors.name}
+        error={Boolean(inputErrors.username)}
+        helperText={inputErrors.username}
         label="Username"
-        onChange={e => setName(e.target.value)}
-        value={name}
+        name="username"
+        onChange={handleChange}
+        value={username}
       />
       <TextField
         error={Boolean(inputErrors.email)}
         helperText={inputErrors.email}
         label="Email"
-        onChange={e => setEmail(e.target.value)}
+        name="email"
+        onChange={handleChange}
         value={email}
       />
       <Password
         error={Boolean(inputErrors.password)}
         helperText={inputErrors.password}
         label="Password"
-        onChange={e => setPassword(e.target.value)}
+        name="password"
+        onChange={handleChange}
         value={password}
       />
       <LoadingButton loading={isSubmitting} type="submit" variant="contained">
@@ -66,12 +72,18 @@ export default function Register() {
       </LoadingButton>
       <Box>
         Already have an account?{" "}
-        <MuiLink component={Link} to="../login">
+        <MuiLink component={Link} to={isSubmitting ? "#" : "../login"}>
           Login
         </MuiLink>
       </Box>
     </Form>
   )
+
+  function handleChange({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) {
+    setValues({ ...values, [name]: value })
+  }
 
   async function googleLogin() {
     if (isSubmitting) return
@@ -87,12 +99,12 @@ export default function Register() {
 
   async function register() {
     if (isSubmitting) return
-    const inputErrors = validateAccountForm({ email, name, password })
+    const inputErrors = validateAccountForm(values)
     setInputErrors(inputErrors)
     if (Object.keys(inputErrors).length > 0) return
     setIsSubmitting(true)
     try {
-      await registerWithEmail(name, email, password)
+      await registerWithEmail(username, email, password)
     } catch (error) {
       setAuthError(extractErrorMessage(error))
     } finally {

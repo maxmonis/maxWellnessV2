@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { ChangeEvent, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -13,7 +13,10 @@ import { validateAccountForm } from "../../utils/formValidators"
 import { extractErrorMessage } from "../../utils/parsers"
 
 export default function ResetPassword() {
-  const [email, setEmail] = useState("")
+  const [values, setValues] = useState({
+    email: "",
+  })
+  const { email } = values
   const [inputErrors, setInputErrors] = useState<
     ReturnType<typeof validateAccountForm>
   >({})
@@ -23,7 +26,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     setInputErrors({})
-  }, [email])
+  }, [values])
 
   if (wasEmailSent)
     return (
@@ -49,7 +52,8 @@ export default function ResetPassword() {
         error={Boolean(inputErrors.email)}
         helperText={inputErrors.email}
         label="Email"
-        onChange={e => setEmail(e.target.value)}
+        name="email"
+        onChange={handleChange}
         value={email}
       />
       <LoadingButton loading={isSubmitting} type="submit" variant="contained">
@@ -57,16 +61,22 @@ export default function ResetPassword() {
       </LoadingButton>
       <Box>
         Don't have an account?{" "}
-        <MuiLink component={Link} to="../register">
+        <MuiLink component={Link} to={isSubmitting ? "#" : "../register"}>
           Register
         </MuiLink>
       </Box>
     </Form>
   )
 
+  function handleChange({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) {
+    setValues({ ...values, [name]: value })
+  }
+
   async function resetPassword() {
     if (isSubmitting) return
-    const inputErrors = validateAccountForm({ email })
+    const inputErrors = validateAccountForm(values)
     setInputErrors(inputErrors)
     if (Object.keys(inputErrors).length > 0) return
     setIsSubmitting(true)
