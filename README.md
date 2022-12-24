@@ -67,6 +67,12 @@ Start the app in development mode:
 yarn dev
 ```
 
+Start the app in development mode with Mock Service Worker mock API enabled:
+
+```
+yarn dev:msw
+```
+
 ---
 
 ## Production
@@ -85,4 +91,10 @@ Launch the test runner in the interactive watch mode:
 
 ```
 yarn test
+```
+
+Start the app in development mode and open Cypress end to end tests:
+
+```
+yarn e2e
 ```
