@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -23,10 +23,6 @@ export default function ResetPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [authError, setAuthError] = useState("")
   const [wasEmailSent, setWasEmailSent] = useState(false)
-
-  useEffect(() => {
-    setInputErrors({})
-  }, [values])
 
   if (wasEmailSent)
     return (
@@ -72,6 +68,7 @@ export default function ResetPassword() {
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [name]: value })
+    setInputErrors({})
   }
 
   async function resetPassword() {

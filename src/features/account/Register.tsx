@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -7,8 +7,9 @@ import MuiLink from "@mui/material/Link"
 import TextField from "@mui/material/TextField"
 
 import Form from "../../components/form/Form"
+import GoogleButton from "../../components/form/GoogleButton"
 import Password from "../../components/form/Password"
-import { logInWithGoogle, registerWithEmail } from "../../firebase"
+import { registerWithEmail } from "../../firebase"
 import { validateAccountForm } from "../../utils/formValidators"
 import { extractErrorMessage } from "../../utils/parsers"
 
@@ -24,10 +25,6 @@ export default function Register() {
   >({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [authError, setAuthError] = useState("")
-
-  useEffect(() => {
-    setInputErrors({})
-  }, [values])
 
   return (
     <Form
@@ -63,13 +60,7 @@ export default function Register() {
       <LoadingButton loading={isSubmitting} type="submit" variant="contained">
         Register
       </LoadingButton>
-      <LoadingButton
-        loading={isSubmitting}
-        onClick={googleLogin}
-        variant="contained"
-      >
-        Register with Google
-      </LoadingButton>
+      <GoogleButton {...{ handleError, isSubmitting, setIsSubmitting }} />
       <Box>
         Already have an account?{" "}
         <MuiLink component={Link} to={isSubmitting ? "#" : "../login"}>
@@ -83,18 +74,11 @@ export default function Register() {
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [name]: value })
+    setInputErrors({})
   }
 
-  async function googleLogin() {
-    if (isSubmitting) return
-    setIsSubmitting(true)
-    try {
-      await logInWithGoogle()
-    } catch (error) {
-      setAuthError(extractErrorMessage(error))
-    } finally {
-      setIsSubmitting(false)
-    }
+  function handleError(error: unknown) {
+    setAuthError(extractErrorMessage(error))
   }
 
   async function register() {
@@ -106,7 +90,7 @@ export default function Register() {
     try {
       await registerWithEmail(username, email, password)
     } catch (error) {
-      setAuthError(extractErrorMessage(error))
+      handleError(error)
     } finally {
       setIsSubmitting(false)
     }

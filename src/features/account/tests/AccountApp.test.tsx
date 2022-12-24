@@ -30,7 +30,7 @@ describe("AccountApp", () => {
     render(<AccountApp />, { wrapper: BrowserRouter })
 
     // login is the default route
-    screen.getByRole("button", { name: "Login" })
+    screen.getByRole("button", { name: /login/i })
 
     // navigate to password reset from login
     userEvent.click(screen.getByRole("link", { name: /forgot password/i }))
@@ -38,15 +38,15 @@ describe("AccountApp", () => {
 
     // navigate to register from password reset
     userEvent.click(screen.getByRole("link", { name: /register/i }))
-    screen.getByRole("button", { name: "Register" })
+    screen.getByRole("button", { name: /register/i })
 
     // navigate to login from register
     userEvent.click(screen.getByRole("link", { name: /login/i }))
-    screen.getByRole("button", { name: "Login" })
+    screen.getByRole("button", { name: /login/i })
 
     // navigate to register from login
     userEvent.click(screen.getByRole("link", { name: /register/i }))
-    screen.getByRole("button", { name: "Register" })
+    screen.getByRole("button", { name: /register/i })
   })
 
   test("redirects to the home page if a user is logged in", () => {
@@ -58,6 +58,6 @@ describe("AccountApp", () => {
 
     // because there's a user we should redirect to the root route
     expect(mockUseNavigate).toHaveBeenCalledTimes(1)
-    expect(mockUseNavigate).toHaveBeenCalledWith("/")
+    expect(mockUseNavigate).toHaveBeenCalledWith("/", { replace: true })
   })
 })

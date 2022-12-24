@@ -77,7 +77,7 @@ describe("Login", () => {
   test("logs user in if credentials are valid", async () => {
     render(<Login />, { wrapper: BrowserRouter })
     const submitButton = screen.getByRole("button", {
-      name: "Login",
+      name: /login/i,
     })
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.type(screen.getByLabelText("Password"), password)
@@ -92,7 +92,7 @@ describe("Login", () => {
     expect(submitButton).toBeDisabled()
     expect(
       screen.getByRole("button", {
-        name: /login with google/i,
+        name: /sign in with google/i,
       }),
     ).toBeDisabled()
     // hit enter to ensure no extra request is fired
@@ -116,7 +116,7 @@ describe("Login", () => {
   test("opens popup to log user in using google", async () => {
     render(<Login />, { wrapper: BrowserRouter })
     const googleButton = screen.getByRole("button", {
-      name: /login with google/i,
+      name: /sign in with google/i,
     })
     userEvent.click(googleButton)
 
@@ -126,7 +126,7 @@ describe("Login", () => {
 
     // buttons disabled while submitting
     expect(googleButton).toBeDisabled()
-    expect(screen.getByRole("button", { name: "Login" })).toBeDisabled()
+    expect(screen.getByRole("button", { name: /login/i })).toBeDisabled()
     // hit enter to ensure no extra request is fired
     userEvent.keyboard("{enter}")
 
@@ -159,7 +159,9 @@ describe("Login", () => {
     screen.getByText(errorMessage)
 
     // test Google error handling
-    userEvent.click(screen.getByRole("button", { name: /login with google/i }))
+    userEvent.click(
+      screen.getByRole("button", { name: /sign in with google/i }),
+    )
     await screen.findByText(errorMessage2)
 
     // user can hide alert

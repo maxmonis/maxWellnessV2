@@ -24,7 +24,7 @@ export default function Password({ InputProps, ...props }: PasswordProps) {
               onClick={() => setIsPlainText(!isPlainText)}
               sx={{ ml: -1.5 }}
             >
-              {isPlainText ? <Visibility /> : <VisibilityOff />}
+              {isPlainText ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </InputAdornment>
         ),
