@@ -58,6 +58,6 @@ describe("AccountApp", () => {
 
     // because there's a user we should redirect to the root route
     expect(mockUseNavigate).toHaveBeenCalledTimes(1)
-    expect(mockUseNavigate).toHaveBeenCalledWith("/")
+    expect(mockUseNavigate).toHaveBeenCalledWith("/", { replace: true })
   })
 })

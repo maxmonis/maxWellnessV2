@@ -18,7 +18,7 @@ export default function AccountApp() {
   const [user] = useAuthState(auth)
 
   useEffect(() => {
-    if (user) navigate("/")
+    if (user) navigate("/", { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
