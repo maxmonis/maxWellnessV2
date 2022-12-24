@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -24,10 +24,6 @@ export default function Register() {
   >({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [authError, setAuthError] = useState("")
-
-  useEffect(() => {
-    setInputErrors({})
-  }, [values])
 
   return (
     <Form
@@ -83,6 +79,7 @@ export default function Register() {
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [name]: value })
+    setInputErrors({})
   }
 
   async function googleLogin() {

@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { Link } from "react-router-dom"
 
 import LoadingButton from "@mui/lab/LoadingButton"
@@ -23,10 +23,6 @@ export default function Login() {
   >({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [authError, setAuthError] = useState("")
-
-  useEffect(() => {
-    setInputErrors({})
-  }, [values])
 
   return (
     <Form error={authError} hideError={() => setAuthError("")} onSubmit={login}>
@@ -73,6 +69,7 @@ export default function Login() {
     target: { name, value },
   }: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [name]: value })
+    setInputErrors({})
   }
 
   async function googleLogin() {
