@@ -7,8 +7,9 @@ import MuiLink from "@mui/material/Link"
 import TextField from "@mui/material/TextField"
 
 import Form from "../../components/form/Form"
+import GoogleButton from "../../components/form/GoogleButton"
 import Password from "../../components/form/Password"
-import { logInWithEmail, logInWithGoogle } from "../../firebase"
+import { logInWithEmail } from "../../firebase"
 import { validateAccountForm } from "../../utils/formValidators"
 import { extractErrorMessage } from "../../utils/parsers"
 
@@ -46,13 +47,7 @@ export default function Login() {
       <LoadingButton loading={isSubmitting} type="submit" variant="contained">
         Login
       </LoadingButton>
-      <LoadingButton
-        loading={isSubmitting}
-        onClick={googleLogin}
-        variant="contained"
-      >
-        Login with Google
-      </LoadingButton>
+      <GoogleButton {...{ handleError, isSubmitting, setIsSubmitting }} />
       <MuiLink component={Link} to={isSubmitting ? "#" : "../reset-password"}>
         Forgot Password
       </MuiLink>
@@ -72,16 +67,8 @@ export default function Login() {
     setInputErrors({})
   }
 
-  async function googleLogin() {
-    if (isSubmitting) return
-    setIsSubmitting(true)
-    try {
-      await logInWithGoogle()
-    } catch (error) {
-      setAuthError(extractErrorMessage(error))
-    } finally {
-      setIsSubmitting(false)
-    }
+  function handleError(error: unknown) {
+    setAuthError(extractErrorMessage(error))
   }
 
   async function login() {
@@ -93,7 +80,7 @@ export default function Login() {
     try {
       await logInWithEmail(email, password)
     } catch (error) {
-      setAuthError(extractErrorMessage(error))
+      handleError(error)
     } finally {
       setIsSubmitting(false)
     }
