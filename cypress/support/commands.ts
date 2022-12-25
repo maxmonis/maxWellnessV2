@@ -7,13 +7,7 @@ declare global {
   }
 }
 
-export function login({
-  email,
-  password,
-}: {
-  email: string
-  password: string
-}) {
+function login({ email, password }: { email: string; password: string }) {
   cy.visit("/")
   cy.get("input[name='email']").type(email)
   cy.intercept("GET", /Firestore\/Listen\/channel/).as("listen")
@@ -21,7 +15,7 @@ export function login({
   cy.wait("@listen")
 }
 
-export function register({
+function register({
   email,
   password,
   username,
@@ -41,3 +35,5 @@ export function register({
 
 Cypress.Commands.add("login", login)
 Cypress.Commands.add("register", register)
+
+export {}

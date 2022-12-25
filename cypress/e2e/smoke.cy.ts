@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"
 
 describe("Account Management", () => {
-  it("allows user to register, log in, log out, and reset password", async () => {
+  it("allows user to register, log in, log out, and reset password", () => {
     const username = faker.internet.userName()
     const email = `${username}@example.com`
     const password = email
