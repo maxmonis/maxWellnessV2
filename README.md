@@ -57,6 +57,16 @@ Ensure you're using the correct Node version:
 nvm use
 ```
 
+Create gitignored env files:
+
+```
+touch .env.local .env.test.local
+```
+
+Add a project on [firebase](https://console.firebase.google.com/). Once you have
+a corresponding credential for every firebaseConfig value (they all start with
+`REACT_APP_`), put them in the env files you created.
+
 ---
 
 ## Development
