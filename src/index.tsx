@@ -1,4 +1,3 @@
-import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 
 import { worker } from "./mocks/worker"
@@ -9,10 +8,6 @@ if (process.env.REACT_APP_USE_MSW) {
   worker.start()
 }
 
-createRoot(document.getElementById("root") as HTMLElement).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+createRoot(document.getElementById("root") as HTMLElement).render(<App />)
 
 reportWebVitals()

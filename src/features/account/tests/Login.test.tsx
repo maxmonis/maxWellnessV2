@@ -115,14 +115,16 @@ describe("Login", () => {
 
   test("opens popup to log user in using google", async () => {
     render(<Login />, { wrapper: BrowserRouter })
-    const googleButton = screen.getByRole("button", {
-      name: /sign in with google/i,
-    })
-    userEvent.click(googleButton)
 
     // type valid credentials to facilitate loading state test
     userEvent.type(screen.getByLabelText(/email/i), email)
     userEvent.type(screen.getByLabelText("Password"), password)
+
+    // click the button to open the google popup
+    const googleButton = screen.getByRole("button", {
+      name: /sign in with google/i,
+    })
+    userEvent.click(googleButton)
 
     // buttons disabled while submitting
     expect(googleButton).toBeDisabled()

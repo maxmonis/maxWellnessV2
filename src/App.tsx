@@ -7,9 +7,11 @@ import {
   ThemeProvider,
 } from "@mui/material/styles"
 import useMediaQuery from "@mui/material/useMediaQuery"
+import { LocalizationProvider } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 
 import AccountApp from "./features/account/AccountApp"
-import WorkoutApp from "./features/workout/WorkoutApp"
+import Dashboard from "./features/Dashboard"
 
 export default function App() {
   const prefersDark = useMediaQuery("(prefers-color-scheme: dark)")
@@ -24,15 +26,17 @@ export default function App() {
   )
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline enableColorScheme />
-      <BrowserRouter>
-        <Routes>
-          <Route path="account/*" element={<AccountApp />} />
-          <Route path="/" element={<WorkoutApp />} />
-          <Route path="*" element={<Navigate replace to="/" />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline enableColorScheme />
+        <BrowserRouter>
+          <Routes>
+            <Route path="account/*" element={<AccountApp />} />
+            <Route path="/" element={<Dashboard />} />
+            <Route path="*" element={<Navigate replace to="/" />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </LocalizationProvider>
   )
 }

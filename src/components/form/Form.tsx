@@ -33,10 +33,13 @@ export default function Form({
       display="flex"
       flexDirection="column"
       gap={6}
+      maxHeight="80vh"
       maxWidth="20rem"
-      p={6}
+      overflow="auto"
+      px={{ xs: 4, sm: 6 }}
+      py={6}
       width="100%"
-      {...(onSubmit ? { onSubmit: submitForm } : {})}
+      {...(onSubmit ? { onSubmit: handleSubmit, noValidate: true } : {})}
       {...props}
     >
       {error && (
@@ -48,7 +51,7 @@ export default function Form({
     </Box>
   )
 
-  function submitForm(e: FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     onSubmit?.()
   }
