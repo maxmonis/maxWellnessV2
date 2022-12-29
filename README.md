@@ -57,6 +57,16 @@ Ensure you're using the correct Node version:
 nvm use
 ```
 
+Create gitignored env files:
+
+```
+touch .env.local .env.test.local
+```
+
+Add a project on [firebase](https://console.firebase.google.com/). Once you have
+a corresponding credential for every firebaseConfig value (they all start with
+`REACT_APP_`), put them in the env files you created.
+
 ---
 
 ## Development
@@ -65,6 +75,12 @@ Start the app in development mode:
 
 ```
 yarn dev
+```
+
+Start the app in development mode with Mock Service Worker mock API enabled:
+
+```
+yarn dev:msw
 ```
 
 ---
@@ -85,4 +101,10 @@ Launch the test runner in the interactive watch mode:
 
 ```
 yarn test
+```
+
+Start the app in development mode and open Cypress end to end tests:
+
+```
+yarn e2e
 ```
